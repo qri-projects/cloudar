@@ -1,5 +1,5 @@
 import NormalMsg from "../../normal/NormalMsg";
-import Place from "./Place";
+import Place from "./BubblePlace";
 
 export default interface BubbleMsg {
     msg: NormalMsg

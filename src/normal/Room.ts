@@ -19,8 +19,6 @@ export default class Room extends React.Component<RoomProps, any> {
     }
 
     componentDidMount() {
-        const that = this
-
         this.props.msgSource.registerOnMsg(normalMsg => {
             this.panelReactRef.current?.registerMsg(normalMsg)
         })

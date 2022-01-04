@@ -22,7 +22,7 @@ class MockMsgSource implements MsgSource {
                 event: () => {
                     for (let onMsg of this.onMsgs) {
                         onMsg({
-                            uniqueId: "12345",
+                            uniqueId: "12345" + i,
                             sender: {
                                 avatar: "https://pic.ggemo.com/picgo/qriheadimg.png",
                                 name: "qri",
