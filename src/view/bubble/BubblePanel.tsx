@@ -1,11 +1,12 @@
 import React, {RefObject} from "react";
 import BubbleMsg from "./BubbleMsg";
-import BubbleMsgView from "./BubbleMsgView";
+import BubbleMsgView from "./view/BubbleMsgView";
 import NormalMsg from "../../normal/NormalMsg";
 import bubbleThemeAdaptor from "./BubbleThemeAdaptor";
 import Panel from "../../normal/Panel";
 import bubblePlaceRegistry from "./BubblePlaceRegistry";
 import CSS from "csstype";
+import cloudarTimer from "../../normal/CloudarTimer";
 export default class BubblePanel extends Panel<any, { msgs: Array<BubbleMsg> }> {
     style: CSS.Properties = {
         position: "absolute",
@@ -21,6 +22,19 @@ export default class BubblePanel extends Panel<any, { msgs: Array<BubbleMsg> }> 
         this.state = {
             msgs: new Array<BubbleMsg>()
         }
+
+        // cloudarTimer.registerLoop(() => {
+        //     console.log("123")
+        // }, 2000);
+        console.log("construct")
+        cloudarTimer.registerEvent({
+            event: () => {console.log("222")},
+            shouldExecuteMillSeconds: new Date().getTime() + 1000,
+            isFinished: false,
+            isExecuting: false
+        })
+
+
     }
 
     public registerMsg(msg: NormalMsg) {

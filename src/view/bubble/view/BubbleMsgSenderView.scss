@@ -1,0 +1,31 @@
+.bubbleMsgSender {
+  margin: 0 4px 0 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.bubbleMsgSenderHeadImgHolder {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1px solid #0000ff;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+  }
+}
+
+.bubbleMsgSenderNameHolder {
+  min-width: 40px;
+  max-width: 92px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: left;
+}

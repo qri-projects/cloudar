@@ -24,15 +24,21 @@ class MockMsgSource implements MsgSource {
                         onMsg({
                             uniqueId: "12345" + i,
                             sender: {
-                                avatar: "https://pic.ggemo.com/picgo/qriheadimg.png",
+                                avatar: "http://pic.ggemo.com/picgo/qriheadimg.jpg",
                                 name: "qri",
-                                uniqueId: "qri#2333"
+                                uniqueId: "qri#23330"
                             },
-                            content: `23333hhh${i}`,
+                            content: `草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草`,
                             sendTime: new Date().getTime(),
                             reply2UniqueId: undefined,
 
-                            subSenders: undefined,
+                            subSenders: [
+                                {
+                                    uniqueId: "qri#23331",
+                                    name: "小黄瓜小黄瓜小黄瓜小小黄瓜小黄瓜小黄瓜小小黄瓜小黄瓜小黄瓜小小黄瓜小黄瓜小黄瓜小",
+                                    avatar: "http://pic.ggemo.com/picgo/qriheadimg.jpg"
+                                }
+                            ],
                             extraInfo: undefined
                         })
                     }

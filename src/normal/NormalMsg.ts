@@ -5,7 +5,7 @@ export default interface NormalMsg {
     sendTime: number
     reply2UniqueId?: string
 
-    subSenders?: [Sender]
+    subSenders?: Array<Sender>
     extraInfo?: string
 }
 

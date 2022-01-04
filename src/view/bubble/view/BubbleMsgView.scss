@@ -1,0 +1,24 @@
+.bubbleMsg {
+  position: absolute;
+  padding: 8px 12px 8px 12px;
+  border-radius: 15px;
+  max-width: 600px;
+}
+
+.bubbleMsgSendersHolder {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  max-width: 600px
+}
+
+.bubbleMsgContentHolder {
+  border: 1px solid #ccc;
+  padding: 6px 8px 6px 8px;
+  border-radius: 20px;
+  margin-top: -8px;
+  color: #444;
+  background: rgba(244,250,255,0.9);
+  max-width: 224px;
+}

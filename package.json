@@ -42,6 +42,8 @@
     ]
   },
   "devDependencies": {
-    "@types/functional-red-black-tree": "^1.0.1"
+    "@types/functional-red-black-tree": "^1.0.1",
+    "node-sass": "^7.0.1",
+    "sass-loader": "^12.4.0"
   }
 }

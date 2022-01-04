@@ -7,7 +7,9 @@ import bubblePlaceRegistry from "./BubblePlaceRegistry";
 class BubbleThemeAdaptor implements CloudarThemeAdaptor<NormalMsg, BubbleMsg> {
     convert(normalMsg: NormalMsg): BubbleMsg {
         let disappearAt = new Date().getMilliseconds() + 3000;
-        let scale = {width: 100, height: 100};
+        let height = 72 + -8 + 14 + 21 * Math.ceil(normalMsg.content.length / 14)
+        let width = 18 + 16 * Math.min(normalMsg.content.length, 14)
+        let scale = {width, height};
         let position = bubblePlaceRegistry.getPosition(scale);
         return {
             msg: normalMsg,
