@@ -13,7 +13,6 @@ class CloudarTimer {
         const now = new Date().getTime();
         let shouldExecNodes: Iterator<number, CloudarTimerEvent> = this.holder.lt(now)
         let shouldExecNode: Node<number, CloudarTimerEvent> | null
-
         shouldExecNode = shouldExecNodes.node
         while (shouldExecNode) {
             let shouldExec = shouldExecNode.value
@@ -25,11 +24,10 @@ class CloudarTimer {
             shouldExec.isExecuting = true
             shouldExec.event()
             shouldExec.isFinished = true
-            this.holder.remove(shouldExecNode!!.key)
+            this.holder = this.holder.remove(shouldExecNode!!.key)
 
             shouldExecNodes.prev();
             shouldExecNode = shouldExecNodes.node
-
         }
     }
 

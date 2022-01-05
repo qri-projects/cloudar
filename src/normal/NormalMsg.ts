@@ -4,6 +4,7 @@ export default interface NormalMsg {
     content: string
     sendTime: number
     reply2UniqueId?: string
+    level: Level
 
     subSenders?: Array<Sender>
     extraInfo?: string
@@ -15,7 +16,7 @@ export interface Sender {
     avatar: string
 }
 
-export enum LEVEL {
+export enum Level {
     /**
      * 永久置顶, 类似群公告
      */
@@ -39,5 +40,5 @@ export enum LEVEL {
 }
 
 export interface DisplayParam {
-    level: LEVEL
+    level: Level
 }

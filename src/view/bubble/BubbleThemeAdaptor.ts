@@ -7,6 +7,7 @@ import bubblePlaceRegistry from "./BubblePlaceRegistry";
 class BubbleThemeAdaptor implements CloudarThemeAdaptor<NormalMsg, BubbleMsg> {
     convert(normalMsg: NormalMsg): BubbleMsg {
         let disappearAt = new Date().getMilliseconds() + 3000;
+        // 72: 头像框&姓名高度, -8: 消息框负margin, 14: 消息框pending
         let height = 72 + -8 + 14 + 21 * Math.ceil(normalMsg.content.length / 14)
         let width = 18 + 16 * Math.min(normalMsg.content.length, 14)
         let scale = {width, height};
@@ -18,7 +19,6 @@ class BubbleThemeAdaptor implements CloudarThemeAdaptor<NormalMsg, BubbleMsg> {
             place: {
                 ...position, ...scale
             }
-
         };
     }
 

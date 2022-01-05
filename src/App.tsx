@@ -3,7 +3,7 @@ import './App.css';
 import BubblePanel from "./view/bubble/BubblePanel";
 import Room from "./normal/Room";
 import MsgSource from "./normal/MsgSource";
-import NormalMsg, {Sender} from "./normal/NormalMsg";
+import NormalMsg, {Level, Sender} from "./normal/NormalMsg";
 import cloudarTimer from "./normal/CloudarTimer";
 
 
@@ -31,7 +31,7 @@ class MockMsgSource implements MsgSource {
                             content: `草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草草`,
                             sendTime: new Date().getTime(),
                             reply2UniqueId: undefined,
-
+                            level: Level.NORMAL,
                             subSenders: [
                                 {
                                     uniqueId: "qri#23331",

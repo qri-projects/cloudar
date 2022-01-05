@@ -26,6 +26,7 @@ export default class BubbleMsgView extends React.Component<{ msg: BubbleMsg }, a
                     )
                 }
             </div>
+
             {/*消息内容*/}
             <div className={"bubbleMsgContentHolder"}>
                 {this.props.msg.msg.content}
