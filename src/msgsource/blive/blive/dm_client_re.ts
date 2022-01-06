@@ -12,7 +12,7 @@ class DMclientRE extends DMclient {
    * @param {DMclientOptions} [{ roomID = 23058, userID = 0, protocol = 'socket' }={}]
    * @memberof DMclientRE
    */
-  constructor({ roomID = 23058, userID = 0, protocol = 'socket' }: DMclientOptions = {}) {
+  constructor({ roomID = 23058, userID = 0, protocol = 'ws' }: DMclientOptions = {}) {
     super({ roomID, userID, protocol })
     this.on('DMerror', error => console.error(error))
     this.on('close', () => this._ClientReConnect())

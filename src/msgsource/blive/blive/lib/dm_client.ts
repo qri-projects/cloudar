@@ -194,21 +194,21 @@ class DMclient extends EventEmitter {
         this._connected = true
         if (options === undefined) {
             // 动态获取服务器地址, 防止B站临时更换
-            const getDanmuInfo = {uri: `https://api.live.bilibili.com/xlive/app-room/v1/index/getDanmuInfo?room_id=${this.roomID}`}
+            const getDanmuInfo = {uri: `http://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${this.roomID}&type=0`}
             const danmuInfo = await (await fetch(getDanmuInfo.uri)).json()
-
+            console.log("danmuInfo", danmuInfo)
             let socketServer = 'broadcastlv.chat.bilibili.com'
             let socketPort = 2243
             let wsServer = 'broadcastlv.chat.bilibili.com'
             let wsPort = 2244
             let wssPort = 443
-            if (danmuInfo !== undefined && danmuInfo.response.statusCode === 200 && danmuInfo.body.code === 0) {
-                wsServer = danmuInfo.body.data.host_list[0].host
-                wsPort = danmuInfo.body.data.host_list[0].ws_port
-                wssPort = danmuInfo.body.data.host_list[0].wss_port
-                this.key = danmuInfo.body.data.token
+            if (danmuInfo !== undefined && danmuInfo.code === 0) {
+                wsServer = danmuInfo.data.host_list[0].host
+                wsPort = danmuInfo.data.host_list[0].ws_port
+                wssPort = danmuInfo.data.host_list[0].wss_port
+                this.key = danmuInfo.data.token
             }
-            if (this._protocol === 'socket' || this._protocol === 'flash') {
+            if (this._protocol === 'flash') {
                 this._server = socketServer
                 this._port = socketPort
             } else {
@@ -246,7 +246,9 @@ class DMclient extends EventEmitter {
      * @memberof DMclient
      */
     protected _ClientConnect() {
-        let client = new WebSocket(`${this._protocol}://${this._server}:${this._port}/sub`);
+        let url = `${this._protocol}://${this._server}:${this._port}/sub`
+        console.log(url)
+        let client = new WebSocket(url);
         this._client = client
         if (client != null) {
 
@@ -334,13 +336,14 @@ class DMclient extends EventEmitter {
      */
     protected _ClientSendData(totalLen: number, headLen = 16
         , version = this.version, type = 2, driver = 1, data?: string) {
-        const bufferData = Buffer.allocUnsafe(totalLen)
-        bufferData.writeInt32BE(totalLen, 0)
-        bufferData.writeInt16BE(headLen, 4)
-        bufferData.writeInt16BE(version, 6)
-        bufferData.writeInt32BE(type, 8)
-        bufferData.writeInt32BE(driver, 12)
-        if (data) bufferData.write(data, headLen)
+        var newBuff = new ArrayBuffer(totalLen)
+        let bufferData = new DataView(newBuff, 0, totalLen);
+        bufferData.setInt32(totalLen, 0)
+        bufferData.setInt16(headLen, 4)
+        bufferData.setInt16(version, 6)
+        bufferData.setInt32(type, 8)
+        bufferData.setInt32(driver, 12)
+        if (data) bufferData.set(data, headLen)
         this._client.send(bufferData)
     }
 

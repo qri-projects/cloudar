@@ -1,4 +1,4 @@
-type DMclientProtocol = 'socket' | 'flash' | 'ws' | 'wss'
+type DMclientProtocol = 'flash' | 'ws' | 'wss'
 interface DMclientOptions {
     roomID?: number
     userID?: number
