@@ -4,9 +4,6 @@ export default interface NormalMsg {
     content: string
     sendTime: number
     reply2UniqueId?: string
-    level: Level
-
-    subSenders?: Array<Sender>
     extraInfo?: string
 }
 

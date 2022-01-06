@@ -1,4 +1,4 @@
-import NormalMsg from "../../normal/NormalMsg";
+import NormalMsg, {Sender} from "../../normal/NormalMsg";
 import Place from "./BubblePlace";
 
 export default interface BubbleMsg {
@@ -6,6 +6,7 @@ export default interface BubbleMsg {
     /**
      * 消失时间, 毫秒
      */
+    subSenders?: [Sender]
     disappearAt: number
     scaleRatio: number
     place: Place

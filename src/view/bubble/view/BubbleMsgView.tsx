@@ -21,7 +21,7 @@ export default class BubbleMsgView extends React.Component<{ msg: BubbleMsg }, a
             <div className={"bubbleMsgSendersHolder"}>
                 <BubbleMsgSenderView sender={this.props.msg.msg.sender}/>
                 {
-                    this.props.msg.msg.subSenders?.map(sender =>
+                    this.props.msg.subSenders?.map(sender =>
                         <BubbleMsgSenderView key={sender.uniqueId} sender={sender}/>
                     )
                 }
