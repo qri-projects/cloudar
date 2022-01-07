@@ -13,6 +13,7 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "functional-red-black-tree": "^1.0.1",
+    "pako": "^2.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
@@ -25,7 +26,7 @@
   },
   "homepage": "http://message.bilibili.com",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=80 && react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@types/functional-red-black-tree": "^1.0.1",
     "@types/node": "^14.18.2",
+    "@types/pako": "^1.0.3",
     "@types/request": "^2.48.8",
     "node-sass": "^7.0.1",
     "sass-loader": "^12.4.0"

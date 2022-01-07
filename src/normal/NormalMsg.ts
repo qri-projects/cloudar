@@ -1,10 +1,14 @@
+import {ReactNode} from "react";
+
 export default interface NormalMsg {
     uniqueId: string
     sender: Sender
-    content: string
+    content: string | ReactNode
     sendTime: number
+    recvTime?: number
     reply2UniqueId?: string
     extraInfo?: string
+    level: Level
 }
 
 export interface Sender {

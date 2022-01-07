@@ -1,7 +1,10 @@
-import {inflate} from 'zlib'
+
 import {EventEmitter} from 'events'
 import tools from "./tools";
-
+import {escape} from "querystring";
+import {Buffer} from "buffer";
+import {bufferFrom} from "memfs/lib/internal/buffer";
+import {inflate} from "pako"
 /**
  * 错误类型
  *
@@ -196,7 +199,6 @@ class DMclient extends EventEmitter {
             // 动态获取服务器地址, 防止B站临时更换
             const getDanmuInfo = {uri: `http://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${this.roomID}&type=0`}
             const danmuInfo = await (await fetch(getDanmuInfo.uri)).json()
-            console.log("danmuInfo", danmuInfo)
             let socketServer = 'broadcastlv.chat.bilibili.com'
             let socketPort = 2243
             let wsServer = 'broadcastlv.chat.bilibili.com'
@@ -247,14 +249,15 @@ class DMclient extends EventEmitter {
      */
     protected _ClientConnect() {
         let url = `${this._protocol}://${this._server}:${this._port}/sub`
-        console.log(url)
         let client = new WebSocket(url);
         this._client = client
         if (client != null) {
 
             client.onopen =(ev) => this._ClientConnectHandler();
 
-            client.onmessage = (ev) => this._ClientDataHandler(ev.data);
+            client.onmessage = async (ev) => {
+                this._ClientDataHandler(bufferFrom(await ev.data.arrayBuffer()))
+            };
             this._client.onclose =  () => this.Close()
         }
 
@@ -336,14 +339,14 @@ class DMclient extends EventEmitter {
      */
     protected _ClientSendData(totalLen: number, headLen = 16
         , version = this.version, type = 2, driver = 1, data?: string) {
-        var newBuff = new ArrayBuffer(totalLen)
-        let bufferData = new DataView(newBuff, 0, totalLen);
-        bufferData.setInt32(totalLen, 0)
-        bufferData.setInt16(headLen, 4)
-        bufferData.setInt16(version, 6)
-        bufferData.setInt32(type, 8)
-        bufferData.setInt32(driver, 12)
-        if (data) bufferData.set(data, headLen)
+        const bufferData = Buffer.allocUnsafe(totalLen)
+        bufferData.writeInt32BE(totalLen, 0)
+        bufferData.writeInt16BE(headLen, 4)
+        bufferData.writeInt16BE(version, 6)
+        bufferData.writeInt32BE(type, 8)
+        bufferData.writeInt32BE(driver, 12)
+
+        if (data) bufferData.write(data, headLen)
         this._client.send(bufferData)
     }
 
@@ -417,7 +420,9 @@ class DMclient extends EventEmitter {
      * @memberof DMclient
      */
     protected async _ParseClientData(data: Buffer) {
-        switch (data.readInt32BE(8)) {
+        let event = data.readInt32BE(8);
+
+        switch (event) {
             case 3:
                 // 每次发送心跳包都会接收到此类消息, 所以用来判断是否超时
                 clearTimeout(this._timeout)
@@ -470,14 +475,9 @@ class DMclient extends EventEmitter {
      * @memberof DMclient
      */
     protected _Uncompress(data: Buffer): Promise<Buffer | undefined> {
-        return new Promise<Buffer>((resolve, reject) => {
-            inflate(data, (error, result) => {
-                if (error === null) return resolve(result)
-                else {
-                    console.error(data, error)
-                    return reject()
-                }
-            })
+        return new Promise<Buffer>((resolve) => {
+            let inflatedArray: Uint8Array = inflate(data)
+            resolve(bufferFrom(inflatedArray))
         })
     }
 }
