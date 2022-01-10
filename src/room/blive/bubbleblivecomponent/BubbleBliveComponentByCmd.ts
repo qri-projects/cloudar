@@ -53,12 +53,22 @@ class DanmuBubbleBliveMsg extends BubbleBliveComponentByCmd<Danmaku, BliveBubble
 class SendGiftBliveMsg extends BubbleBliveComponentByCmd<SendGift, BliveBubbleSendGiftMsg> {
     cmd: string = "SEND_GIFT";
 
+    genSender(rawBliveMsg: SendGift): Sender {
+        let userId = rawBliveMsg.data.uid
+        let uniqueId = `bili-${userId}`
+        return {
+            uniqueId,
+            name: rawBliveMsg.data.uname,
+            avatar: `http://cdn.flrscn.tech/avatar-302/${userId}`
+        }
+    }
+
     genBliveBubbleMsg(rawBliveMsg: SendGift): BliveBubbleSendGiftMsg {
         return {
             uniqueId: `bili-SEND_GIFT-${rawBliveMsg.data.timestamp}-${rawBliveMsg.data.rnd}`,
             raw: rawBliveMsg,
             giftStatic: null,
-            senders: new Array<Sender>()
+            senders: new Array<Sender>(this.genSender(rawBliveMsg))
         };
     }
 
