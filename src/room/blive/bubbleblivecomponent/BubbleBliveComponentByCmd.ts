@@ -9,6 +9,9 @@ import {
     BliveBubbleSendGiftMsg
 } from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
 import BubbleSendGiftView from "../view/bubblemsg/bycmd/SEND_GIFT/BubbleSendGiftView";
+import giftStaticInfos from "../manager/giftStaticManager";
+import {MsgManager} from "../manager/MsgManager";
+import BubblePlaceRegistry from "../view/BubblePlaceRegistry";
 
 export abstract class BubbleBliveComponentByCmd<BaseBliveMsgType extends BaseBliveMsg, BliveBubbleMsgType extends BliveBubbleMsg<BaseBliveMsgType>> {
     abstract cmd: string;
@@ -17,16 +20,18 @@ export abstract class BubbleBliveComponentByCmd<BaseBliveMsgType extends BaseBli
 
     abstract genBliveBubbleMsg(rawBliveMsg: BaseBliveMsgType): BliveBubbleMsgType
 
-    genReactComponent(rawBliveMsg: BaseBliveMsgType): React.ReactNode {
-        let bliveBubbleMsg = this.genBliveBubbleMsg(rawBliveMsg);
+    genReactComponent(bliveBubbleMsg: BliveBubbleMsgType): React.ReactNode {
         return React.createElement(this.viewClassType, {key: bliveBubbleMsg.uniqueId, msg: bliveBubbleMsg});
     }
+
+    // 利用这个类做方法表驱动
+    abstract registerMsg(msg: BliveBubbleMsgType, msgManager: MsgManager): BliveBubbleMsgType | null;
 }
 
 class DanmuBubbleBliveMsg extends BubbleBliveComponentByCmd<Danmaku, BliveBubbleDanmuMsg> {
     cmd = "DANMU_MSG"
 
-    genSender(rawBliveMsg: Danmaku): Sender {
+    public genSender(rawBliveMsg: Danmaku): Sender {
         let userId = rawBliveMsg.info[2][0]
         let uniqueId = `bili-${userId}`
         return {
@@ -37,23 +42,26 @@ class DanmuBubbleBliveMsg extends BubbleBliveComponentByCmd<Danmaku, BliveBubble
     }
 
 
-    genBliveBubbleMsg(rawBliveMsg: Danmaku): BliveBubbleMsg<Danmaku> {
-        return {
-            raw: rawBliveMsg,
-            uniqueId: `bili-bubble-DANMU_MSG-${rawBliveMsg.info[0][4]}-${rawBliveMsg.info[0][5]}`,
-            senders: new Array<Sender>(
-                this.genSender(rawBliveMsg)
-            )
-        };
+    genBliveBubbleMsg(rawBliveMsg: Danmaku): BliveBubbleDanmuMsg {
+        console.log("rawBliveMsg=", rawBliveMsg)
+        return new BliveBubbleDanmuMsg(
+            `bili-bubble-DANMU_MSG-${rawBliveMsg.info[0][4]}-${rawBliveMsg.info[0][5]}`,
+            rawBliveMsg,
+            new Array<Sender>(this.genSender(rawBliveMsg))
+        );
     }
 
     viewClassType = BubbleDanmuMsgView;
+
+    registerMsg(msg: BliveBubbleDanmuMsg, msgManager: MsgManager): BliveBubbleDanmuMsg | null {
+        return msgManager.registerDanmakuMsg(msg);
+    }
 }
 
 class SendGiftBliveMsg extends BubbleBliveComponentByCmd<SendGift, BliveBubbleSendGiftMsg> {
     cmd: string = "SEND_GIFT";
 
-    genSender(rawBliveMsg: SendGift): Sender {
+    public genSender(rawBliveMsg: SendGift): Sender {
         let userId = rawBliveMsg.data.uid
         let uniqueId = `bili-${userId}`
         return {
@@ -64,19 +72,23 @@ class SendGiftBliveMsg extends BubbleBliveComponentByCmd<SendGift, BliveBubbleSe
     }
 
     genBliveBubbleMsg(rawBliveMsg: SendGift): BliveBubbleSendGiftMsg {
-        return {
-            uniqueId: `bili-SEND_GIFT-${rawBliveMsg.data.timestamp}-${rawBliveMsg.data.rnd}`,
-            raw: rawBliveMsg,
-            giftStatic: null,
-            senders: new Array<Sender>(this.genSender(rawBliveMsg))
-        };
+        return new BliveBubbleSendGiftMsg(
+            `bili-SEND_GIFT-${rawBliveMsg.data.timestamp}-${rawBliveMsg.data.rnd}`,
+            rawBliveMsg,
+            new Array<Sender>(this.genSender(rawBliveMsg)),
+            giftStaticInfos.get(rawBliveMsg.data.giftId)!
+        );
     }
 
     viewClassType: React.ClassType<{ msg: BliveBubbleSendGiftMsg }, any, any> = BubbleSendGiftView;
+
+    registerMsg(msg: BliveBubbleSendGiftMsg, msgManager: MsgManager): BliveBubbleSendGiftMsg | null {
+        return msgManager.registerSendGiftMsg(msg);
+    }
 }
 
-const danmuBubbleBliveMsg = new DanmuBubbleBliveMsg();
-const sendGiftBliveMsg = new SendGiftBliveMsg();
+export const danmuBubbleBliveMsg = new DanmuBubbleBliveMsg();
+export const sendGiftBliveMsg = new SendGiftBliveMsg();
 
 const bubbleBliveComponentsByCmd = new Map<string, BubbleBliveComponentByCmd<any, any>>(
     [

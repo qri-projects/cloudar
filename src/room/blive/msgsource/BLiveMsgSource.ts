@@ -5,10 +5,7 @@ import {BaseBliveMsg} from "./bubbleblivetypes/BliveMsg";
 export default class BLiveMsgSource {
     onMsgs: Array<(msg: BaseBliveMsg) => void> = []
 
-    giftStaticInfos = new Map<number, GiftStatic>();
-
     constructor(roomId: number) {
-        this.initRoom();
         let client = new DMclientRE({roomID: roomId});
         client.on("ALL_MSG", (data) => {
             console.log("ALL_MSG", data)
@@ -64,21 +61,6 @@ export default class BLiveMsgSource {
             // this.emitMsg(normalMsg)
         // })
         client.Connect()
-    }
-
-    private async initRoom() {
-        let gifts: [GiftStatic] = await this.fetchRoomGifts();
-        gifts.forEach(gift => {
-            this.giftStaticInfos.set(gift.id, gift);
-        })
-        console.log("giftStaticInfos", this.giftStaticInfos);
-    }
-
-    private async fetchRoomGifts(): Promise<[GiftStatic]> {
-        let raw = await fetch("https://api.live.bilibili.com/xlive/web-room/v1/giftPanel/giftConfig?platform=pc&room_id=336119&area_parent_id=9&area_id=371");
-        let json = await raw.json()
-        let gifts = json.data.list
-        return new Promise(r => r(gifts))
     }
 
     private emitMsg(normalMsg: BaseBliveMsg) {

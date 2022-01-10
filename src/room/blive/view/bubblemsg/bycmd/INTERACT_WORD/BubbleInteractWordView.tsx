@@ -5,12 +5,10 @@ import BubbleMsgHolderView from "../../bubblemsgholder/BubbleMsgHolderView";
 
 export default class BubbleInteractWordView extends BubbleViewByCmd<BliveBubbleSendGiftMsg, { giftData?: BliveBubbleSendGiftMsg }> {
     render() {
-        return <BubbleMsgHolderView senders={this.props.msg.senders}>
-            <div style={{
-                fontWeight: 1000
-            }}>
-                来咯~
-            </div>
-        </BubbleMsgHolderView>;
+        return <div style={{
+            fontWeight: 1000
+        }}>
+            来咯~
+        </div>;
     }
 }

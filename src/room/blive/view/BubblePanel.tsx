@@ -4,9 +4,10 @@ import bubblePlaceRegistry from "./BubblePlaceRegistry";
 import CSS from "csstype";
 import {BaseBliveMsg} from "../msgsource/bubbleblivetypes/BliveMsg";
 import bubbleBliveComponentsByCmd, {BubbleBliveComponentByCmd} from "../bubbleblivecomponent/BubbleBliveComponentByCmd";
+import {BliveBubbleMsg} from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
+import BubblePlaceRegistry from "./BubblePlaceRegistry";
 
-// msgs: Array<BaseBliveMsg>
-export default class BubblePanel extends React.Component<any, { msgs: Array<BaseBliveMsg> }> {
+export default class BubblePanel extends React.Component<{msgs: Array<BliveBubbleMsg<BaseBliveMsg>>}, any> {
     style: CSS.Properties = {
         position: "absolute",
         width: "100vw",
@@ -15,30 +16,24 @@ export default class BubblePanel extends React.Component<any, { msgs: Array<Base
     }
 
     ref: RefObject<any> = React.createRef()
+    placeRegistry = new BubblePlaceRegistry()
 
     constructor(props: any) {
         super(props);
-        this.state = {
-            msgs: new Array<BaseBliveMsg>()
-        }
-    }
-
-    public registerMsg(msg: BaseBliveMsg) {
-        let msgs = this.state.msgs
-        msgs.push(msg)
-        this.setState({"msgs": [...msgs]})
     }
 
     render() {
         return <div style={this.style} ref={this.ref}>
             {
-                this.state.msgs.map(
+                this.props.msgs.map(
                     (m) => {
-                        if (!bubbleBliveComponentsByCmd.has(m.cmd)) {
+                        if (!bubbleBliveComponentsByCmd.has(m.raw.cmd)) {
                             return <span key={Math.ceil(Math.random() * 1000)}>{JSON.stringify(m)}</span>
                         }
-                        const bubbleBliveComponent: BubbleBliveComponentByCmd<any, any> = bubbleBliveComponentsByCmd.get(m.cmd)!;
-                        return bubbleBliveComponent.genReactComponent(m)
+                        const bubbleBliveComponent: BubbleBliveComponentByCmd<any, any> = bubbleBliveComponentsByCmd.get(m.raw.cmd)!;
+                        return <BubbleMsgHolderView key={m.uniqueId} senders={m.senders} placeRegistry={this.placeRegistry}>
+                            {bubbleBliveComponent.genReactComponent(m)}
+                        </BubbleMsgHolderView>
                     }
                 )
             }
@@ -46,6 +41,6 @@ export default class BubblePanel extends React.Component<any, { msgs: Array<Base
     }
 
     componentDidMount() {
-        bubblePlaceRegistry.setScale({width: this.ref.current.clientWidth, height: this.ref.current.clientHeight})
+        this.placeRegistry.setScale({width: this.ref.current.clientWidth, height: this.ref.current.clientHeight})
     }
 }

@@ -1,14 +1,13 @@
 import Place, {Position, Scale} from "./BubblePlace";
 
-class BubblePlaceRegistry {
+export default class BubblePlaceRegistry {
     scale: Scale = {width: 0, height: 0};
 
     setScale(scale: Scale) {
         this.scale = scale
     }
 
-    // todo
-    registerUsePlace(msg: object) {
+    registerUsePlace(place: Place) {
 
     }
 
@@ -19,6 +18,3 @@ class BubblePlaceRegistry {
         }
     }
 }
-
-const bubblePlaceRegistry = new BubblePlaceRegistry();
-export default bubblePlaceRegistry;

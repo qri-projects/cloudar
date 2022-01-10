@@ -17,11 +17,3 @@ interface DMdanmakuError {
     error: TypeError
     data: Buffer
 }
-
-// 弹幕服务器
-interface DanmuInfo {
-    code: number
-    message: string
-    ttl: number
-    data: danmuInfoData
-}
