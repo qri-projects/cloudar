@@ -1,11 +1,8 @@
 import React from 'react';
 import './App.css';
-import BubblePanel from "./view/bubble/BubblePanel";
-import Room from "./normal/Room";
-import MsgSource from "./normal/MsgSource";
-import NormalMsg, {Sender} from "./normal/NormalMsg";
-import cloudarTimer from "./normal/CloudarTimer";
-import BLiveMsgSource from "./msgsource/blive/BLiveMsgSource";
+import BubblePanel from "./room/blive/view/BubblePanel";
+import BLiveMsgSource from "./room/blive/msgsource/BLiveMsgSource";
+import BliveBubbleRoom from "./room/blive/BliveBubbleRoom";
 
 
 // class MockMsgSource implements MsgSource {
@@ -45,9 +42,9 @@ import BLiveMsgSource from "./msgsource/blive/BLiveMsgSource";
 // }
 
 function App() {
-    const mockMsgSource = new BLiveMsgSource(336119);
+    // const mockMsgSource = new BLiveMsgSource(336119);
     return (
-        <Room msgSource={mockMsgSource} panelType={BubblePanel} />
+        <BliveBubbleRoom roomId={336119} />
     );
 }
 

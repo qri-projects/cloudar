@@ -1,5 +1,4 @@
 import Place, {Position, Scale} from "./BubblePlace";
-import BubbleMsg from "./BubbleMsg";
 
 class BubblePlaceRegistry {
     scale: Scale = {width: 0, height: 0};
@@ -8,7 +7,8 @@ class BubblePlaceRegistry {
         this.scale = scale
     }
 
-    registerUsePlace(msg: BubbleMsg) {
+    // todo
+    registerUsePlace(msg: object) {
 
     }
 

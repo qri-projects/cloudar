@@ -1,5 +1,5 @@
 import React from "react";
-import {Sender} from "../../../normal/NormalMsg";
+import {Sender} from "../../../../../normal/NormalMsg";
 import "./BubbleMsgSenderView.scss"
 
 export default class BubbleMsgSenderView extends React.Component<{ sender: Sender }, any> {
