@@ -3,9 +3,11 @@ import BubbleMsgHolderView from "./bubblemsg/bubblemsgholder/BubbleMsgHolderView
 import bubblePlaceRegistry from "./BubblePlaceRegistry";
 import CSS from "csstype";
 import {BaseBliveMsg} from "../msgsource/bubbleblivetypes/BliveMsg";
-import bubbleBliveComponentsByCmd, {BubbleBliveComponentByCmd} from "../bubbleblivecomponent/BubbleBliveComponentByCmd";
 import {BliveBubbleMsg} from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
 import BubblePlaceRegistry from "./BubblePlaceRegistry";
+import bubbleBliveComponentsByCmd from "../bubbleblivecomponent/bubbleBliveComponts";
+import {BubbleBliveComponentByCmd} from "../bubbleblivecomponent/BubbleBliveComponentByCmd";
+import "./BubblePanel.scss"
 
 export default class BubblePanel extends React.Component<{msgs: Array<BliveBubbleMsg<BaseBliveMsg>>}, any> {
     style: CSS.Properties = {
@@ -31,7 +33,7 @@ export default class BubblePanel extends React.Component<{msgs: Array<BliveBubbl
                             return <span key={Math.ceil(Math.random() * 1000)}>{JSON.stringify(m)}</span>
                         }
                         const bubbleBliveComponent: BubbleBliveComponentByCmd<any, any> = bubbleBliveComponentsByCmd.get(m.raw.cmd)!;
-                        return <BubbleMsgHolderView key={m.uniqueId} senders={m.senders} placeRegistry={this.placeRegistry}>
+                        return <BubbleMsgHolderView key={m.uniqueId} msg={m} placeRegistry={this.placeRegistry}>
                             {bubbleBliveComponent.genReactComponent(m)}
                         </BubbleMsgHolderView>
                     }

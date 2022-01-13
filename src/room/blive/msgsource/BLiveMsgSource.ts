@@ -4,10 +4,11 @@ import {BaseBliveMsg} from "./bubbleblivetypes/BliveMsg";
 
 export default class BLiveMsgSource {
     onMsgs: Array<(msg: BaseBliveMsg) => void> = []
+    client: DMclientRE;
 
     constructor(roomId: number) {
-        let client = new DMclientRE({roomID: roomId});
-        client.on("ALL_MSG", (data) => {
+        this.client = new DMclientRE({roomID: roomId});
+        this.client.on("ALL_MSG", (data) => {
             console.log("ALL_MSG", data)
             this.emitMsg(data);
         })
@@ -60,7 +61,10 @@ export default class BLiveMsgSource {
             // }
             // this.emitMsg(normalMsg)
         // })
-        client.Connect()
+    }
+
+    public start() {
+        this.client.Connect();
     }
 
     private emitMsg(normalMsg: BaseBliveMsg) {

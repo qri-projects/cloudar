@@ -1,21 +1,35 @@
 import {BaseBliveMsg} from "../msgsource/bubbleblivetypes/BliveMsg";
-import bubbleBliveComponentsByCmd, {
-    BubbleBliveComponentByCmd, danmuBubbleBliveMsg,
-    sendGiftBliveMsg
-} from "../bubbleblivecomponent/BubbleBliveComponentByCmd";
 import {
     BliveBubbleDanmuMsg,
     BliveBubbleMsg,
     BliveBubbleSendGiftMsg
 } from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
 import {GiftStatic} from "../msgsource/bubbleblivetypes/BubbleBliveCommon";
+import bubbleBliveComponentsByCmd from "../bubbleblivecomponent/bubbleBliveComponts";
+import {BubbleBliveComponentByCmd} from "../bubbleblivecomponent/BubbleBliveComponentByCmd";
+import danmakuComponent from "../bubbleblivecomponent/BubbleBliveComponentDanmaku";
 
 export class MsgManager {
     allMsgs: Array<BliveBubbleMsg<BaseBliveMsg>> = new Array<BliveBubbleMsg<BaseBliveMsg>>()
+    onChanges: Map<number, (allMsg: Array<BliveBubbleMsg<BaseBliveMsg>>) => void>
+        = new Map<number, (allMsg: Array<BliveBubbleMsg<BaseBliveMsg>>) => void>();
+    private onChangeId = -1;
 
-    public registerMsg(rawMsg: BaseBliveMsg): Array<BliveBubbleMsg<BaseBliveMsg>> {
+    registerOnChange(onChange: (allMsg: Array<BliveBubbleMsg<BaseBliveMsg>>) => void): number {
+        this.onChangeId += 1;
+        this.onChanges.set(this.onChangeId, onChange);
+        return this.onChangeId;
+    }
+
+    unRegisterOnChange(key: number) {
+        this.onChanges.delete(key)
+    }
+
+
+
+    public registerMsg(rawMsg: BaseBliveMsg): void{
         if (!bubbleBliveComponentsByCmd.has(rawMsg.cmd)) {
-            return this.allMsgs;
+            return;
         }
         let cmdComponent: BubbleBliveComponentByCmd<any, any> = bubbleBliveComponentsByCmd.get(rawMsg.cmd)!
         let bubbleMsg: BliveBubbleMsg<any> = cmdComponent.genBliveBubbleMsg(rawMsg)
@@ -23,10 +37,22 @@ export class MsgManager {
         if (newMsg) {
             this.allMsgs.push(newMsg)
         }
-        return this.allMsgs;
+        this.onChanges.forEach((onchange: ((allMsg: Array<BliveBubbleMsg<BaseBliveMsg>>) => void)) => onchange(this.allMsgs))
+        return;
+    }
+
+    public removeMsg(bliveBubbleMsg: BliveBubbleMsg<BaseBliveMsg>) {
+        const i = this.allMsgs.indexOf(bliveBubbleMsg)
+        this.allMsgs.splice(i, 1);
+        this.onChanges.forEach(onchange => onchange(this.allMsgs))
     }
 
     private danmakuByFuduIdInner: Map<string, BliveBubbleDanmuMsg> = new Map<string, BliveBubbleDanmuMsg>();
+
+    registerNormalMsg<MsgType extends BliveBubbleMsg<any>>(msg: MsgType): MsgType | null {
+        return msg;
+    }
+
     /**
      * 这个方法利用{@link BubbleBliveComponentByCmd}做表驱动
      * @param msg
@@ -38,7 +64,7 @@ export class MsgManager {
             this.danmakuByFuduIdInner.set(fuduId, msg);
             return msg;
         } else {
-            const sender = danmuBubbleBliveMsg.genSender(msg.raw);
+            const sender = danmakuComponent.genSender(msg.raw);
             const oldMsg = this.danmakuByFuduIdInner.get(fuduId)!
             const senders = oldMsg.senders;
             if (!senders.includes(sender)) {

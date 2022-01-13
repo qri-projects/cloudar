@@ -1,5 +1,5 @@
 .bubbleMsgSender {
-  margin: 0 4px 0 6px;
+  margin: 0 6px 0 4px;
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -10,7 +10,7 @@
   width: 36px;
   height: 36px;
   border-radius: 18px;
-  border: 1px solid #0000ff;
+  border: 1px solid #9d9d9d;
   overflow: hidden;
 
   img {
@@ -28,4 +28,6 @@
   font-size: 13px;
   font-weight: 900;
   text-align: left;
+  text-shadow: 0 1px white, 1px 0 white, -1px 0 white, 0 -1px white;
+  user-select: all;
 }

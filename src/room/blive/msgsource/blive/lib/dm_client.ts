@@ -374,8 +374,9 @@ class DMclient extends EventEmitter {
         const dataLen = data.length
         if (dataLen < 16 || dataLen > 0x100000) {
             // 抛弃长度过短和过长的数据
-            const errorInfo: DMdanmakuError = {status: dmErrorStatus.danmaku, error: new TypeError('数据长度异常'), data}
-            return this._ClientErrorHandler(errorInfo)
+            // const errorInfo: DMdanmakuError = {status: dmErrorStatus.danmaku, error: new TypeError('数据长度异常'), data}
+            // return this._ClientErrorHandler(errorInfo)
+            return
         }
         const packageLen = data.readInt32BE(0)
         if (packageLen < 16 || packageLen > 0x100000) {

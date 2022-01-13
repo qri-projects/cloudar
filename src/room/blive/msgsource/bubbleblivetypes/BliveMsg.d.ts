@@ -183,3 +183,44 @@ export interface EntryEffect extends BaseBliveMsg {
 },
     "_roomid": 336119
 }
+
+export interface InteractWord extends BaseBliveMsg {
+    "cmd": "INTERACT_WORD",
+    "data": {
+        "contribution": {
+            "grade": 0
+        },
+        "dmscore": 2,
+        "fans_medal": {
+            "anchor_roomid": 0,
+            "guard_level": 0,
+            "icon_id": 0,
+            "is_lighted": 0,
+            "medal_color": 0,
+            "medal_color_border": 0,
+            "medal_color_end": 0,
+            "medal_color_start": 0,
+            "medal_level": 0,
+            "medal_name": "",
+            "score": 0,
+            "special": "",
+            "target_id": 0
+        },
+        "identities": [
+            1
+        ],
+        "is_spread": 0,
+        "msg_type": 1,
+        "roomid": 336119,
+        "score": 1641977569156,
+        "spread_desc": "",
+        "spread_info": "",
+        "tail_icon": 0,
+        "timestamp": 1641977569,
+        "trigger_time": 1641977568058398700,
+        "uid": 76696082,
+        "uname": "小黄瓜本瓜",
+        "uname_color": ""
+    },
+    "_roomid": 336119
+}

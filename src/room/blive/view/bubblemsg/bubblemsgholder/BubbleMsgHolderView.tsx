@@ -6,22 +6,25 @@ import BubbleMsgSenderView from "./BubbleMsgSenderView";
 import "./BubbleMsgHolderView.scss";
 import {Sender} from "../../../../../normal/NormalMsg";
 import Place from "../../BubblePlace";
+import {BliveBubbleMsg} from "../../../msgsource/bubbleblivetypes/BliveBubbleMsg";
+import {appContext, BliveBubbleApplication} from "../../../BliveBubbleRoom";
 
 export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolderViewProp, BubbleMsgHolderViewState> {
-
+    private timerInterval = 200;
     thisRef: RefObject<any> = React.createRef<any>();
 
     constructor(props: BubbleMsgHolderViewProp) {
         super(props);
         this.state = {
-            bgOpacity: 66,
-            bgColor: {r: 130, g: 151, b: 255},
+            bgColor: {r: 145, g: 164, b: 255, a: 1},
             hidden: true,
-            place: {x: 0, y: 0, width: 0, height: 0}
+            place: {x: 0, y: 0, width: 0, height: 0},
+            opacity: 1
         };
     }
 
     componentDidMount() {
+        BubbleMsgHolderView.contextType = appContext
         const width = this.thisRef.current!.clientWidth;
         const height = this.thisRef.current!.clientHeight;
 
@@ -29,11 +32,23 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
         const place = {...position, width, height};
         this.setState({"place": place, "hidden": false})
         this.props.placeRegistry.registerUsePlace(place)
-        for (let i = 0; i < 100; i++) {
-            setTimeout(() => {
-                this.setState({...this.state, bgOpacity: this.state.bgOpacity - 1})
-            }, 3000 * i)
-        }
+        this.refreshRemainLoop()
+    }
+
+    refreshRemainLoop() {
+        const that = this;
+        setTimeout(() => {
+            let m = that.props.msg;
+            m.remainMillSeconds -= that.timerInterval;
+            let bgA = (m.remainMillSeconds/m.initRemainMillSeconds);
+            if (bgA > 0) {
+                that.setState({opacity: bgA})
+                that.refreshRemainLoop();
+            } else {
+                // 销毁
+                (that.context as BliveBubbleApplication).msgManager.removeMsg(that.props.msg);
+            }
+        }, that.timerInterval)
     }
 
     render() {
@@ -41,20 +56,21 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
             {
                 display: this.state.hidden ? "none" : "unset",
                 left: `${this.state.place.x}%`,
-                top: `${this.state.place.y}%`
+                top: `${this.state.place.y}%`,
+                opacity: `${this.state.opacity}`
             }
         }>
             {/*头像*/}
             <div className={"bubbleMsgSendersHolder"}>
                 {
-                    this.props.senders?.map(sender =>
+                    this.props.msg.senders?.map(sender =>
                         <BubbleMsgSenderView key={sender.uniqueId} sender={sender}/>
                     )
                 }
             </div>
 
             <div className={"bubbleMsgContentHolder"} style={{
-                background: `rgba(${this.state.bgColor.r}, ${this.state.bgColor.g},${this.state.bgColor.b},${this.state.bgOpacity}%)`
+                background: this.props.msg.theme.background
             }}>
                 {this.props.children}
             </div>
@@ -63,17 +79,18 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
 }
 
 export interface BubbleMsgHolderViewProp {
-    senders: Array<Sender>,
+    msg: BliveBubbleMsg<any>,
     placeRegistry: BubblePlaceRegistry
 }
 
 export interface BubbleMsgHolderViewState {
-    bgOpacity: number,
     bgColor: {
         r: number,
         g: number,
-        b: number
+        b: number,
+        a: number
     },
+    opacity: number,
     hidden: boolean,
     place: Place
 }
