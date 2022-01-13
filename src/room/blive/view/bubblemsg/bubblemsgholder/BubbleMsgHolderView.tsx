@@ -17,9 +17,8 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
         super(props);
         this.state = {
             bgColor: {r: 145, g: 164, b: 255, a: 1},
-            hidden: true,
             place: {x: 0, y: 0, width: 0, height: 0},
-            opacity: 1
+            opacity: 0
         };
     }
 
@@ -30,7 +29,7 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
 
         const position = this.props.placeRegistry.getPosition({width, height});
         const place = {...position, width, height};
-        this.setState({"place": place, "hidden": false})
+        this.setState({"place": place, "opacity": 1})
         this.props.placeRegistry.registerUsePlace(place)
         this.refreshRemainLoop()
     }
@@ -40,7 +39,7 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
         setTimeout(() => {
             let m = that.props.msg;
             m.remainMillSeconds -= that.timerInterval;
-            let bgA = (m.remainMillSeconds/m.initRemainMillSeconds);
+            let bgA = (m.remainMillSeconds / m.initRemainMillSeconds);
             if (bgA > 0) {
                 that.setState({opacity: bgA})
                 that.refreshRemainLoop();
@@ -54,7 +53,6 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
     render() {
         return <div className={"bubbleMsg"} ref={this.thisRef} style={
             {
-                display: this.state.hidden ? "none" : "unset",
                 left: `${this.state.place.x}%`,
                 top: `${this.state.place.y}%`,
                 opacity: `${this.state.opacity}`
@@ -91,6 +89,5 @@ export interface BubbleMsgHolderViewState {
         a: number
     },
     opacity: number,
-    hidden: boolean,
     place: Place
 }

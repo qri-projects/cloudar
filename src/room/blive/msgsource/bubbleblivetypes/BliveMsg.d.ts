@@ -10,24 +10,32 @@ export interface Danmaku extends BaseBliveMsg {
             1,
             25,
             16777215,
-            1641774525141,
-            1641774071,
+            1642087981130,
+            1642086437,
             0,
             "63e97abb",
             0,
             0,
             0,
             "",
-            0,
-            "{}",
+            1,
+            {
+                "bulge_display": 0,
+                "emoticon_unique": "official_40",
+                "height": 60,
+                "in_player_area": 1,
+                "is_dynamic": 1,
+                "url": "https://i0.hdslb.com/bfs/live/625989e78079e3dc38d75cb9ac392fe8c1aa4a75.png",
+                "width": 195
+            },
             "{}",
             {
                 "mode": 0,
                 "show_player_type": 0,
-                "extra": "{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"问问\",\"user_hash\":\"1676245691\",\"emoticon_unique\":\"\",\"direction\":0,\"pk_direction\":0,\"space_type\":\"\",\"space_url\":\"\"}"
+                "extra": "{\"send_from_me\":false,\"mode\":0,\"color\":16777215,\"dm_type\":1,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"颠勺\",\"user_hash\":\"1676245691\",\"emoticon_unique\":\"official_40\",\"direction\":0,\"pk_direction\":0,\"space_type\":\"\",\"space_url\":\"\"}"
             }
         ],
-        "问问",
+        "颠勺",
         [
             13578650,
             "空包糖",
@@ -58,7 +66,7 @@ export interface Danmaku extends BaseBliveMsg {
             0,
             5805790,
             ">50000",
-            1
+            0
         ],
         [
             "",
@@ -68,17 +76,17 @@ export interface Danmaku extends BaseBliveMsg {
         0,
         null,
         {
-            "ts": 1641774525,
-            "ct": "56DAFD66"
+            "ts": 1642087981,
+            "ct": "AA453F43"
         },
         0,
         0,
         null,
         null,
         0,
-        210
+        70
     ],
-    "_roomid": 336119
+    "_roomid": 495561
 }
 
 export interface SendGift extends BaseBliveMsg {
