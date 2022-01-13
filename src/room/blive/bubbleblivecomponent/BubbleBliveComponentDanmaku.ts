@@ -23,8 +23,13 @@ class BubbleBliveComponentDanmaku extends BubbleBliveComponentByCmd<Danmaku, Bli
 
     viewClassType = BubbleDanmakuMsgView;
 
-    registerMsg(msg: BliveBubbleDanmuMsg, msgManager: MsgManager): BliveBubbleDanmuMsg | null {
-        return msgManager.registerDanmakuMsg(msg);
+    registerMsg(msg: BliveBubbleDanmuMsg, msgManager: MsgManager) {
+        msgManager.registerDanmakuMsg(msg);
+    }
+
+
+    unRegisterMsg(msg: BliveBubbleDanmuMsg, msgManager: MsgManager): void {
+        msgManager.unRegisterDanmakuMsg(msg);
     }
 }
 

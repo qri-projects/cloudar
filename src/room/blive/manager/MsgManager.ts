@@ -27,74 +27,128 @@ export class MsgManager {
 
 
 
+
     public registerMsg(rawMsg: BaseBliveMsg): void{
         if (!bubbleBliveComponentsByCmd.has(rawMsg.cmd)) {
             return;
         }
         let cmdComponent: BubbleBliveComponentByCmd<any, any> = bubbleBliveComponentsByCmd.get(rawMsg.cmd)!
         let bubbleMsg: BliveBubbleMsg<any> = cmdComponent.genBliveBubbleMsg(rawMsg)
-        let newMsg: BliveBubbleMsg<BaseBliveMsg> | null = cmdComponent.registerMsg(bubbleMsg, this)
-        if (newMsg) {
-            this.allMsgs.push(newMsg)
-        }
-        this.onChanges.forEach((onchange: ((allMsg: Array<BliveBubbleMsg<BaseBliveMsg>>) => void)) => onchange(this.allMsgs))
-        return;
+        cmdComponent.registerMsg(bubbleMsg, this)
     }
 
-    public removeMsg(bliveBubbleMsg: BliveBubbleMsg<BaseBliveMsg>) {
+    registerNormalMsg<MsgType extends BliveBubbleMsg<any>>(msg: MsgType) {
+        this.allMsgs.push(msg)
+        this.onChanges.forEach((onchange: ((allMsg: Array<BliveBubbleMsg<BaseBliveMsg>>) => void)) => onchange(this.allMsgs))
+    }
+
+    public unRegisterMsg(bliveBubbleMsg: BliveBubbleMsg<BaseBliveMsg>) {
+        let cmd = bliveBubbleMsg.raw.cmd
+        if (!bubbleBliveComponentsByCmd.has(cmd)) {
+            return;
+        }
+        let cmdComponent: BubbleBliveComponentByCmd<any, any> = bubbleBliveComponentsByCmd.get(cmd)!
+        cmdComponent.unRegisterMsg(bliveBubbleMsg, this)
+    }
+
+    public unRegisterNormalMsg(bliveBubbleMsg: BliveBubbleMsg<BaseBliveMsg>) {
         const i = this.allMsgs.indexOf(bliveBubbleMsg)
         this.allMsgs.splice(i, 1);
         this.onChanges.forEach(onchange => onchange(this.allMsgs))
     }
 
+
+
+
+
     private danmakuByFuduIdInner: Map<string, BliveBubbleDanmuMsg> = new Map<string, BliveBubbleDanmuMsg>();
 
-    registerNormalMsg<MsgType extends BliveBubbleMsg<any>>(msg: MsgType): MsgType | null {
-        return msg;
+    genDanmakuMsgFuduId(msg: BliveBubbleDanmuMsg): string {
+        return msg.raw.info[1]
     }
 
     /**
      * 这个方法利用{@link BubbleBliveComponentByCmd}做表驱动
      * @param msg
      */
-    registerDanmakuMsg(msg: BliveBubbleDanmuMsg): BliveBubbleDanmuMsg | null {
+    registerDanmakuMsg(msg: BliveBubbleDanmuMsg) {
         // 复读注册
-        const fuduId = msg.genMsgFuduId();
+        const fuduId = this.genDanmakuMsgFuduId(msg);
         if (!this.danmakuByFuduIdInner.has(fuduId)) {
             this.danmakuByFuduIdInner.set(fuduId, msg);
-            return msg;
+            this.registerNormalMsg(msg);
+            return;
         } else {
             const sender = danmakuComponent.genSender(msg.raw);
             const oldMsg = this.danmakuByFuduIdInner.get(fuduId)!
             const senders = oldMsg.senders;
-            if (!senders.includes(sender)) {
+
+            if (!senders.map(sender => sender.uniqueId).includes(sender.uniqueId)) {
                 senders.push(sender)
             }
             oldMsg.remainMillSeconds = oldMsg.initRemainMillSeconds;
-            return null;
+            return;
         }
     }
 
-    private sendGiftByComboIdInner: Map<string, BliveBubbleSendGiftMsg> = new Map<string, BliveBubbleSendGiftMsg>();
+    unRegisterDanmakuMsg(msg: BliveBubbleDanmuMsg) {
+        const fuduId = this.genDanmakuMsgFuduId(msg);
+        this.danmakuByFuduIdInner.delete(fuduId);
+        this.unRegisterNormalMsg(msg)
+    }
+
+    private sendGiftByAggregateIdInner: Map<string, Array<BliveBubbleSendGiftMsg>> = new Map<string, Array<BliveBubbleSendGiftMsg>>();
+    private sendGiftProxyByAggregateIdInner: Map<string, BliveBubbleSendGiftMsg> = new Map<string, BliveBubbleSendGiftMsg>();
+
+    private genSendGiftAggregateId(msg: BliveBubbleSendGiftMsg): string {
+        return `${msg.raw.data.uid}-${msg.raw.data.giftId}`;
+    }
+
     /**
      * 这个方法利用{@link BubbleBliveComponentByCmd}做表驱动
      * @param msg
      */
-    public registerSendGiftMsg(msg: BliveBubbleSendGiftMsg): BliveBubbleSendGiftMsg | null {
+    public registerSendGiftMsg(msg: BliveBubbleSendGiftMsg) {
         // 连击注册
-        let comboId = msg.raw.data.batch_combo_id
-        if (!comboId) {
-            return msg
-        }
+        let comboId = this.genSendGiftAggregateId(msg)
 
-        if (!this.sendGiftByComboIdInner.has(comboId)) {
-            this.sendGiftByComboIdInner.set(comboId, msg)
-            return msg;
-        }
+        if (this.sendGiftByAggregateIdInner.has(comboId)) {
+            this.sendGiftByAggregateIdInner.get(comboId)?.push(msg)
 
-        let oldMsg = this.sendGiftByComboIdInner.get(comboId)!
-        oldMsg.raw.data.num += msg.raw.data.num
-        oldMsg.remainMillSeconds = oldMsg.initRemainMillSeconds;
-        return null
+            // 注册过proxy了, 把proxy拿出来, 加num, 刷新时间
+            let proxyedMsg = this.sendGiftProxyByAggregateIdInner.get(comboId)!
+            proxyedMsg.raw.data.num += msg.raw.data.num
+            proxyedMsg.remainMillSeconds = proxyedMsg.initRemainMillSeconds;
+            return
+        } else {
+            // 未注册过proxy, 注册下proxy
+            this.sendGiftByAggregateIdInner.set(comboId, new Array<BliveBubbleSendGiftMsg>(msg))
+
+            const proxyedMsg: BliveBubbleSendGiftMsg = {...msg}
+            this.sendGiftProxyByAggregateIdInner.set(comboId, proxyedMsg)
+            this.registerNormalMsg(msg)
+            return;
+        }
     }
+
+    unRegisterSendGiftMsg(msg: BliveBubbleSendGiftMsg) {
+        let comboId = this.genSendGiftAggregateId(msg)
+            // 删除掉sendGiftByAggregateIdInner里的原生弹幕数据
+            const i = this.sendGiftByAggregateIdInner.get(comboId)?.indexOf(msg)
+            if (i && i > 0) {
+                this.sendGiftByAggregateIdInner.get(comboId)?.splice(i, 1);
+            }
+
+            // 检查是不是应该删除proxy, sendGiftByAggregateIdInner对应的原生弹幕数据空的话, 删除掉proxy
+
+            // this.sendGiftByAggregateIdInner是空的
+            if (!this.sendGiftByAggregateIdInner.get(comboId)?.length) {
+                let proxyMsg = this.sendGiftProxyByAggregateIdInner.get(comboId)!
+                this.sendGiftProxyByAggregateIdInner.delete(comboId)
+                // 删除掉proxy的话, 从view里删除proxyMsg
+                this.unRegisterNormalMsg(proxyMsg)
+            }
+
+    }
+
 }

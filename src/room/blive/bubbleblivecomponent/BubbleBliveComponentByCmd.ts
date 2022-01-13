@@ -21,9 +21,16 @@ export abstract class BubbleBliveComponentByCmd<BaseBliveMsgType extends BaseBli
     }
 
     // 利用这个类做方法表驱动
-    registerMsg(msg: BliveBubbleMsgType, msgManager: MsgManager): BliveBubbleMsgType | null {
-        return msgManager.registerNormalMsg(msg);
+    // 实现里应该调用一次msgManager.registerNormalMsg(msg);
+    registerMsg(msg: BliveBubbleMsgType, msgManager: MsgManager) {
+        msgManager.registerNormalMsg(msg);
     }
+
+    // 实现里应该调用一次msgManager.unRegisterNormalMsg(msg);
+    unRegisterMsg(msg: BliveBubbleMsgType, msgManager: MsgManager) {
+        return msgManager.unRegisterNormalMsg(msg);
+    }
+
 
     genSenderFromUidAndUname(uid: number, uname: string): Sender {
             let userId = uid

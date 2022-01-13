@@ -36,9 +36,6 @@ export class BliveBubbleSendGiftMsg extends BliveBubbleMsg<SendGift> {
 }
 
 export class BliveBubbleDanmuMsg extends BliveBubbleMsg<Danmaku> {
-    genMsgFuduId(): string {
-        return this.raw.info[1]
-    }
 }
 
 export class BliveBubbleInteractWordMsg extends BliveBubbleMsg<InteractWord> {

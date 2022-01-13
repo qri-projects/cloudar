@@ -45,7 +45,7 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
                 that.refreshRemainLoop();
             } else {
                 // 销毁
-                (that.context as BliveBubbleApplication).msgManager.removeMsg(that.props.msg);
+                (that.context as BliveBubbleApplication).msgManager.unRegisterMsg(that.props.msg);
             }
         }, that.timerInterval)
     }

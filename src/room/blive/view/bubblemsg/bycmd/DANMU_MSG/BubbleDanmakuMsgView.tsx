@@ -1,7 +1,6 @@
 import React from "react";
 import BubbleViewByCmd from "../BubbleViewByCmd";
 import {BliveBubbleDanmuMsg, BliveBubbleMsg} from "../../../../msgsource/bubbleblivetypes/BliveBubbleMsg";
-import BubbleMsgHolderView from "../../bubblemsgholder/BubbleMsgHolderView";
 
 export default class BubbleDanmakuMsgView extends BubbleViewByCmd<BliveBubbleDanmuMsg, any>{
     render() {
@@ -11,9 +10,9 @@ export default class BubbleDanmakuMsgView extends BubbleViewByCmd<BliveBubbleDan
             return <img src={emotionInfo["url"]}
                         style={{
                             width: emotionInfo.width / 2, height: emotionInfo.height / 2,
-                            margin: "0px -8px -6px -8px"
+                            margin: "2px -4px -6px -9px"
                         }}
-                        alt={this.props.msg.raw.info[1]}/>
+                        alt={this.props.msg.raw.info[1]} />
         }
         return this.props.msg.raw.info[1]
         // return this.props.msg.raw.info.content;

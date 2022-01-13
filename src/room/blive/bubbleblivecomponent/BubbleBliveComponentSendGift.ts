@@ -1,5 +1,5 @@
-import {SendGift} from "../msgsource/bubbleblivetypes/BliveMsg";
-import {BliveBubbleSendGiftMsg, BliveBubbleTheme} from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
+import {BaseBliveMsg, SendGift} from "../msgsource/bubbleblivetypes/BliveMsg";
+import {BliveBubbleMsg, BliveBubbleSendGiftMsg, BliveBubbleTheme} from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
 import {Sender} from "../../../normal/NormalMsg";
 import giftStaticInfos from "../manager/giftStaticManager";
 import React from "react";
@@ -29,8 +29,12 @@ class BubbleBliveComponentSendGift extends BubbleBliveComponentByCmd<SendGift, B
 
     viewClassType: React.ClassType<{ msg: BliveBubbleSendGiftMsg }, any, any> = BubbleSendGiftView;
 
-    registerMsg(msg: BliveBubbleSendGiftMsg, msgManager: MsgManager): BliveBubbleSendGiftMsg | null {
-        return msgManager.registerSendGiftMsg(msg);
+    registerMsg(msg: BliveBubbleSendGiftMsg, msgManager: MsgManager) {
+        msgManager.registerSendGiftMsg(msg);
+    }
+
+    unRegisterMsg(msg: BliveBubbleSendGiftMsg, msgManager: MsgManager) {
+        msgManager.unRegisterSendGiftMsg(msg);
     }
 }
 
