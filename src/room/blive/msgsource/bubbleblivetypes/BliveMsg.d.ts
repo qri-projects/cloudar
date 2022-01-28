@@ -1,5 +1,11 @@
+import exp from "constants";
+
 export interface BaseBliveMsg {
     cmd: string
+}
+
+export interface HeartBeat extends BaseBliveMsg {
+    qiRen: number
 }
 
 export interface Danmaku extends BaseBliveMsg {

@@ -1,7 +1,7 @@
-import React, {ClassType} from "react";
+import React, {ClassType, ReactElement} from "react";
 
 import {BaseBliveMsg} from "../msgsource/bubbleblivetypes/BliveMsg";
-import {Sender} from "../../../normal/NormalMsg";
+import {Sender, UserMedal} from "../../../normal/NormalMsg";
 import {BliveBubbleMsg} from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
 import {MsgManager} from "../manager/MsgManager";
 import biliUserInfoManager from "../manager/biliUserInfoManager";
@@ -37,7 +37,7 @@ export abstract class BubbleBliveComponentByCmd<BaseBliveMsgType extends BaseBli
             const sender: Sender = {
                 uniqueId: `${userId}`,
                 name: uname,
-                avatar: `https://pic.ggemo.com/6050612487861686.jpg`,
+                avatar: `https://pic.ggemo.com/6050612487861686.jpg`
             }
             biliUserInfoManager.getUserInfo(userId)
                 .then(uerInfo => {

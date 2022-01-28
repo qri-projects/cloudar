@@ -25,9 +25,6 @@ export class MsgManager {
         this.onChanges.delete(key)
     }
 
-
-
-
     public registerMsg(rawMsg: BaseBliveMsg): void{
         if (!bubbleBliveComponentsByCmd.has(rawMsg.cmd)) {
             return;
@@ -56,9 +53,6 @@ export class MsgManager {
         this.allMsgs.splice(i, 1);
         this.onChanges.forEach(onchange => onchange(this.allMsgs))
     }
-
-
-
 
 
     private danmakuByFuduIdInner: Map<string, BliveBubbleDanmuMsg> = new Map<string, BliveBubbleDanmuMsg>();

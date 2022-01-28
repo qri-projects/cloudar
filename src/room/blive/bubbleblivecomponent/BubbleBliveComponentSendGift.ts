@@ -1,6 +1,6 @@
 import {BaseBliveMsg, SendGift} from "../msgsource/bubbleblivetypes/BliveMsg";
 import {BliveBubbleMsg, BliveBubbleSendGiftMsg, BliveBubbleTheme} from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
-import {Sender} from "../../../normal/NormalMsg";
+import {Sender, UserMedal} from "../../../normal/NormalMsg";
 import giftStaticInfos from "../manager/giftStaticManager";
 import React from "react";
 import BubbleSendGiftView from "../view/bubblemsg/bycmd/SEND_GIFT/BubbleSendGiftView";
@@ -11,7 +11,16 @@ class BubbleBliveComponentSendGift extends BubbleBliveComponentByCmd<SendGift, B
     cmd: string = "SEND_GIFT";
 
     public genSender(rawBliveMsg: SendGift): Sender {
-        return this.genSenderFromUidAndUname(rawBliveMsg.data.uid, rawBliveMsg.data.uname)
+        const sender: Sender = this.genSenderFromUidAndUname(rawBliveMsg.data.uid, rawBliveMsg.data.uname)
+        const medalInfo = rawBliveMsg.data.medal_info
+        sender.userMedal =  {
+            name: medalInfo.medal_name,
+            belong2Name: medalInfo.anchor_uname,
+            belong2RoomId: medalInfo.anchor_roomid,
+            color: `${medalInfo.medal_color}`,
+            level: medalInfo.medal_level
+        }
+        return sender;
     }
 
     genBliveBubbleMsg(rawBliveMsg: SendGift): BliveBubbleSendGiftMsg {

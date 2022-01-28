@@ -321,7 +321,8 @@ class DMclient extends EventEmitter {
             const errorInfo: DMclientError = {status: dmErrorStatus.timeout, error: new Error('心跳超时')}
             this._ClientErrorHandler(errorInfo)
         }, 10 * 1000)
-        this._Timer = setTimeout(() => this._ClientHeart(), 30 * 1000)
+        // 心跳循环
+        this._Timer = setTimeout(() => this._ClientHeart(), 10 * 1000)
         this._ClientSendData(16 + data.length, 16, this.version, 2, 1, data)
     }
 

@@ -2,7 +2,9 @@
   margin: 0 6px 0 4px;
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: center;
+  justify-content: center;
+
 }
 
 .bubbleMsgSenderHeadImgHolder {
@@ -30,4 +32,26 @@
   text-align: left;
   text-shadow: 0 1px white, 1px 0 white, -1px 0 white, 0 -1px white;
   user-select: all;
+}
+
+.userMedalHolder {
+  border: 1px solid;
+  display: flex;
+  font-size: 10px;
+  border-radius: 3px;
+  font-weight: 600;
+  margin-bottom: -2px;
+  z-index: 2;
+
+  .userMedalLevel {
+    padding-left: 2px;
+    padding-right: 2px;
+    background: white;
+  }
+
+  .userMedalName {
+    color: white;
+    padding-left: 2px;
+    padding-right: 2px;
+  }
 }
