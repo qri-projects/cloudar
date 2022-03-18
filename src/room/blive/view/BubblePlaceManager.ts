@@ -1,6 +1,14 @@
 import Place, {Position, Scale} from "./BubblePlace";
+import {BliveBubbleApplication} from "../BubbleContextManager";
 
-export default class BubblePlaceRegistry {
+export default class BubblePlaceManager {
+    app: BliveBubbleApplication;
+
+
+    constructor(app: BliveBubbleApplication) {
+        this.app = app;
+    }
+
     scale: Scale = {width: 0, height: 0};
 
     /**
@@ -24,10 +32,15 @@ export default class BubblePlaceRegistry {
 
     /**
      * 放置气泡之后, 向本组件注册已使用该块区域
+     * 在这里面做个醒目逻辑
      * @param place
      */
     registerUsePlace(place: Place) {
+        this.highLightUse(place)
+    }
 
+    highLightUse(place: Place) {
+        this.app.bubbleAlertManager.focus({...place})
     }
 }
 

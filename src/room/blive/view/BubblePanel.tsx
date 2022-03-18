@@ -1,15 +1,16 @@
 import React, {ClassType, RefObject} from "react";
 import BubbleMsgHolderView from "./bubblemsg/bubblemsgholder/BubbleMsgHolderView";
-import bubblePlaceRegistry from "./BubblePlaceRegistry";
+import bubblePlaceRegistry from "./BubblePlaceManager";
 import CSS from "csstype";
 import {BaseBliveMsg} from "../msgsource/bubbleblivetypes/BliveMsg";
 import {BliveBubbleMsg} from "../msgsource/bubbleblivetypes/BliveBubbleMsg";
-import BubblePlaceRegistry from "./BubblePlaceRegistry";
+import BubblePlaceManager from "./BubblePlaceManager";
 import bubbleBliveComponentsByCmd from "../bubbleblivecomponent/bubbleBliveComponts";
 import {BubbleBliveComponentByCmd} from "../bubbleblivecomponent/BubbleBliveComponentByCmd";
 import "./BubblePanel.scss"
+import {AppContext, BliveBubbleApplication} from "../BubbleContextManager";
 
-export default class BubblePanel extends React.Component<{msgs: Array<BliveBubbleMsg<BaseBliveMsg>>}, any> {
+export default class BubblePanel extends React.Component<{ msgs: Array<BliveBubbleMsg<BaseBliveMsg>> }, any> {
     style: CSS.Properties = {
         position: "absolute",
         width: "100vw",
@@ -18,10 +19,10 @@ export default class BubblePanel extends React.Component<{msgs: Array<BliveBubbl
     }
 
     ref: RefObject<any> = React.createRef()
-    placeRegistry = new BubblePlaceRegistry()
 
     constructor(props: any) {
         super(props);
+        BubblePanel.contextType = AppContext;
     }
 
     render() {
@@ -33,7 +34,7 @@ export default class BubblePanel extends React.Component<{msgs: Array<BliveBubbl
                             return <span key={Math.ceil(Math.random() * 1000)}>{JSON.stringify(m)}</span>
                         }
                         const bubbleBliveComponent: BubbleBliveComponentByCmd<any, any> = bubbleBliveComponentsByCmd.get(m.raw.cmd)!;
-                        return <BubbleMsgHolderView key={m.uniqueId} msg={m} placeRegistry={this.placeRegistry}>
+                        return <BubbleMsgHolderView key={m.uniqueId} msg={m}>
                             {bubbleBliveComponent.genReactComponent(m)}
                         </BubbleMsgHolderView>
                     }
@@ -43,6 +44,11 @@ export default class BubblePanel extends React.Component<{msgs: Array<BliveBubbl
     }
 
     componentDidMount() {
-        this.placeRegistry.setScale({width: this.ref.current.clientWidth, height: this.ref.current.clientHeight})
+        console.log(BubblePanel.contextType);
+        console.log("context", this.context);
+        (this.context as BliveBubbleApplication).placeManager.setScale({
+            width: this.ref.current.clientWidth,
+            height: this.ref.current.clientHeight
+        })
     }
 }

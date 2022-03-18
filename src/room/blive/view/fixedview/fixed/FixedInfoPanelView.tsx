@@ -1,5 +1,5 @@
 import React from "react";
-import {appContext} from "../../../BliveBubbleRoom";
+import {AppContext} from "../../../BubbleContextManager";
 import {HeartBeat} from "../../../msgsource/bubbleblivetypes/BliveMsg";
 import cloudarTimer from "../../../../../normal/CloudarTimer";
 import {number2Str} from "../../../../../normal/NumberHelper";
@@ -41,7 +41,7 @@ export default class FixedInfoPanelView extends React.Component<any, QiRenState>
         return (<span style={{
             position: "absolute",
             bottom: "0",
-            left: "0",
+            left: "50px",
             fontWeight: 700,
             textShadow: "1px 0 1px white, 0 1px 1px white, -1px 0 1px white, 0 -1px 1px white",
             color: "#8c94ff"

@@ -1,6 +1,6 @@
 import React, {RefObject} from "react";
 import {BliveBubbleMsg} from "../../../msgsource/bubbleblivetypes/BliveBubbleMsg";
-import BubblePlaceRegistry from "../../BubblePlaceRegistry";
+import BubblePlaceManager from "../../BubblePlaceManager";
 import exp from "constants";
 import Place from "../../BubblePlace";
 

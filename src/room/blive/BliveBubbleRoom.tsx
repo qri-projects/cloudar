@@ -5,69 +5,58 @@ import {MsgManager} from "./manager/MsgManager";
 import {BliveBubbleMsg} from "./msgsource/bubbleblivetypes/BliveBubbleMsg";
 import {BaseBliveMsg, HeartBeat} from "./msgsource/bubbleblivetypes/BliveMsg";
 import FixedInfoPanelView from "./view/fixedview/fixed/FixedInfoPanelView";
+import BubbleAlertPanel, {BubbleAlertManager} from "./view/bubblealter/BubbleAlertPanel";
+import BubblePlaceManager from "./view/BubblePlaceManager";
+import {BliveBubbleApplication, AppContext} from "./BubbleContextManager";
 
-export class BliveBubbleApplication {
-    roomId: number;
-    msgSource;
-    msgManager: MsgManager = new MsgManager();
-
-    constructor(roomId: number) {
-        this.roomId = roomId;
-        this.msgSource = new BLiveMsgSource(roomId);
-    }
-}
-
-export const appContext: Context<BliveBubbleApplication> = React.createContext<BliveBubbleApplication>(new BliveBubbleApplication(336119));
-
-export default class BliveBubbleRoom extends React.Component<BliveRoomProp, BliveRoomState> {
-    app = new BliveBubbleApplication(this.props.roomId);
-
+export default class BliveBubbleRoom extends React.Component<BliveRoomProp, BliveBubbleApplication> {
     qiRenComponentRef = React.createRef<FixedInfoPanelView>();
 
     constructor(props: BliveRoomProp) {
         super(props);
-
-        this.state = {
-            msgsHolder: new Array<BliveBubbleMsg<BaseBliveMsg>>()
-        };
+        this.state = new BliveBubbleApplication(this.props.roomId);
     }
 
     render() {
-        return <appContext.Provider value={this.app}>
+        return <AppContext.Provider value={this.state}>
             <div className="container">
                 <div style={{
-                    backgroundColor: "rgba(255, 137, 197, 0.2)",
+                    backgroundColor: "rgba(255, 137, 197, 0)",
                     width: "100vw",
                     position: "fixed",
                     height: "100vh"
                 }}></div>
+                <div className="positionAlerter">
+                </div>
 
 
-                <video src="//pic.ggemo.com/usaNCED.mp4" autoPlay loop muted
-                       style={{position:"fixed",zIndex: "-10",width: "100vw", filter: "grayscale(100%) brightness(118%)"}}></video>
+                {/*<video src="//pic.ggemo.com/usaNCED.mp4" autoPlay loop muted*/}
+                {/*       style={{position:"fixed",zIndex: "-10",width: "100vw", filter: "grayscale(100%) brightness(118%)"}}></video>*/}
+                <BubbleAlertPanel/>
             </div>
-            <FixedInfoPanelView ref={this.qiRenComponentRef} />
-            <BubblePanel msgs={this.state.msgsHolder} />
-        </appContext.Provider>
+            <FixedInfoPanelView ref={this.qiRenComponentRef}/>
+            <BubblePanel msgs={this.state.msgsHolder}/>
+        </AppContext.Provider>
     }
 
     componentDidMount() {
         const that = this;
-        that.app.msgSource.registerOnMsg(msg => {
-            that.app.msgManager.registerMsg(msg);
+        const app = this.state;
+        app.msgSource.registerOnMsg(msg => {
+            app.msgManager.registerMsg(msg);
         })
 
-        that.app.msgSource.registerOnMsg(msg => {
+        app.msgSource.registerOnMsg(msg => {
             if (msg.cmd === "$heartBeat") {
                 const hbMsg = msg as HeartBeat;
                 this.qiRenComponentRef.current?.setQiRenValue(hbMsg.qiRen)
             }
         })
 
-        that.app.msgManager.registerOnChange((allMsg) => {
+        app.msgManager.registerOnChange((allMsg) => {
             that.setState({msgsHolder: allMsg})
         })
-        that.app.msgSource.start()
+        app.msgSource.start()
     }
 }
 
@@ -76,5 +65,5 @@ export interface BliveRoomProp {
 }
 
 interface BliveRoomState {
-    msgsHolder: Array<BliveBubbleMsg<BaseBliveMsg>>
+    app: BliveBubbleApplication
 }

@@ -1,13 +1,13 @@
 import React, {ClassType, ReactNode, RefObject} from "react";
 
 import CSS from 'csstype';
-import BubblePlaceRegistry from "../../BubblePlaceRegistry";
+import BubblePlaceManager from "../../BubblePlaceManager";
 import BubbleMsgSenderView from "./BubbleMsgSenderView";
 import "./BubbleMsgHolderView.scss";
 import {Sender} from "../../../../../normal/NormalMsg";
 import Place from "../../BubblePlace";
 import {BliveBubbleMsg} from "../../../msgsource/bubbleblivetypes/BliveBubbleMsg";
-import {appContext, BliveBubbleApplication} from "../../../BliveBubbleRoom";
+import {AppContext, BliveBubbleApplication} from "../../../BubbleContextManager";
 
 export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolderViewProp, BubbleMsgHolderViewState> {
     private timerInterval = 200;
@@ -20,17 +20,17 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
             place: {x: 0, y: 0, width: 0, height: 0},
             opacity: 0
         };
+        BubbleMsgHolderView.contextType = AppContext
     }
 
     componentDidMount() {
-        BubbleMsgHolderView.contextType = appContext
         const width = this.thisRef.current!.clientWidth;
         const height = this.thisRef.current!.clientHeight;
-
-        const position = this.props.placeRegistry.getPosition({width, height});
+        const placeManager = (this.context as BliveBubbleApplication).placeManager;
+        const position = placeManager.getPosition({width, height});
         const place = {...position, width, height};
         this.setState({"place": place, "opacity": 1})
-        this.props.placeRegistry.registerUsePlace(place)
+        placeManager.registerUsePlace(place)
         this.refreshRemainLoop()
     }
 
@@ -78,7 +78,6 @@ export default class BubbleMsgHolderView extends React.Component<BubbleMsgHolder
 
 export interface BubbleMsgHolderViewProp {
     msg: BliveBubbleMsg<any>,
-    placeRegistry: BubblePlaceRegistry
 }
 
 export interface BubbleMsgHolderViewState {
