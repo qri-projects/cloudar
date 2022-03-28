@@ -7,19 +7,28 @@ import {BliveBubbleMsg} from "./msgsource/bubbleblivetypes/BliveBubbleMsg";
 import {BaseBliveMsg} from "./msgsource/bubbleblivetypes/BliveMsg";
 
 export class BliveBubbleApplication {
+    urlParam: Map<string, string>;
     roomId: number;
     msgSource: BLiveMsgSource;
     msgManager: MsgManager = new MsgManager();
     placeManager: BubblePlaceManager;
     bubbleAlertManager: BubbleAlertManager = new BubbleAlertManager();
     msgsHolder: Array<BliveBubbleMsg<BaseBliveMsg>> = new Array<BliveBubbleMsg<BaseBliveMsg>>()
+    openConfigPanel: boolean = false;
+    applyState: (state: any) => void
 
-    constructor(roomId: number) {
+    constructor(urlParam: Map<string, string>, applyState: (state: any) => void) {
+        const roomId = parseInt(urlParam.get("roomId")!)
+        this.urlParam = urlParam;
         this.roomId = roomId;
         this.msgSource = new BLiveMsgSource(roomId);
         this.placeManager = new BubblePlaceManager(this)
+        this.applyState = applyState
     }
 }
 
 export const AppContext: Context<BliveBubbleApplication> =
-    React.createContext<BliveBubbleApplication>(new BliveBubbleApplication(336119));
+    React.createContext<BliveBubbleApplication>(
+        new BliveBubbleApplication(new Map<string, string>([["roomId", "336119"]])
+            , (state) => {})
+    );

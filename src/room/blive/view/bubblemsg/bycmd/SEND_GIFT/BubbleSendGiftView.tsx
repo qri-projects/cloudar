@@ -15,8 +15,6 @@ export default class BubbleSendGiftView extends BubbleViewByCmd<BliveBubbleSendG
 
     render() {
         return <div className={"bubbleSendGift"}>
-                <span>{this.props.msg.raw.data.uname} 送出 </span>
-
                 <span className={"bubbleSendGiftGiftHolder"}>
                     <img src={this.props.msg?.giftStatic.gif} alt=""/>
                     {this.props.msg.raw.data.giftName}

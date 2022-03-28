@@ -2,6 +2,7 @@
   "name": "cloudar",
   "version": "0.1.0",
   "private": true,
+  "main": "../cloudar-electron/src/main.js",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -30,7 +31,11 @@
     "start": "set PORT=80 && react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "startElectron": "electron . --devTool --loadUrl --roomId=336119",
+    "startElectronWindow": "electron . --window --devTool --loadUrl --roomId=336119",
+    "app:dir": "electron-builder --dir",
+    "app:dist": "electron-builder"
   },
   "eslintConfig": {
     "extends": [
@@ -55,6 +60,8 @@
     "@types/node": "^14.18.2",
     "@types/pako": "^1.0.3",
     "@types/request": "^2.48.8",
+    "electron": "^17.1.2",
+    "electron-builder": "^22.14.13",
     "node-sass": "^7.0.1",
     "sass-loader": "^12.4.0"
   },
@@ -65,5 +72,13 @@
     "http": false,
     "https": false,
     "tls": false
+  },
+  "build": {
+    "appId": "com.ggemo.cloudar",
+    "extends": null,
+    "win": {
+      "asar": false
+    },
+    "directories": {}
   }
 }

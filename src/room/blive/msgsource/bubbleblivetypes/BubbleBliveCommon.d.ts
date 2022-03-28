@@ -54,3 +54,9 @@ export interface GiftStatic {
     "diy_count_map": 0,
     "effect_id": 178
 }
+
+export interface GuardGiftStatic {
+    img: string
+    level: 3
+    name: "舰长"
+}

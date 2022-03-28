@@ -62,7 +62,9 @@ export default class BubbleAlertPanel extends React.Component<any, BubbleAlertPa
 
     addEffect(alertUnitData: BubbleAlertUnitData) {
         this.state.alertUnitData.push(alertUnitData)
+        console.log({alertUnitData})
         this.setState({...this.state})
+        console.log({"state": this.state})
     }
 
     removeEffect(alertUnitData: BubbleAlertUnitData) {
@@ -82,19 +84,21 @@ export default class BubbleAlertPanel extends React.Component<any, BubbleAlertPa
                 const posStyle = {
                     left: `${data.focusPosition.x}px`,
                     top: `${data.focusPosition.y}px`
-                }
+                };
+                console.log({posStyle})
 
                 const posInCalc: Position = {x: data.focusPosition.x, y: data.focusPosition.y}
                 const rad0 = calcAngle(posInCalc, {x: 0, y: 0});
-
                 const rad1 = calcAngle(posInCalc, {x: 0, y: scale.height})
                 const rad2 = calcAngle(posInCalc, {x: scale.width, y: 0})
                 const rad3 = calcAngle(posInCalc, {x: scale.width, y: scale.height})
+
+
                 return <div key={`${data.focusPosition.x}-${data.focusPosition.y}`}>
-                    <div className="alertLine" style={{...posStyle, transform: `rotate(${rad0}rad)`}}></div>
-                    <div className="alertLine" style={{...posStyle, transform: `rotate(${rad1}rad)`}}></div>
-                    <div className="alertLine" style={{...posStyle, transform: `rotate(${rad2}rad)`}}></div>
-                    <div className="alertLine" style={{...posStyle, transform: `rotate(${rad3}rad)`}}></div>
+                    <div className="alertLine" style={{...posStyle, background: `red`, transform: `rotate(${rad0}rad)`}}></div>
+                    <div className="alertLine" style={{...posStyle, background: `white`, transform: `rotate(${rad1}rad)`}}></div>
+                    <div className="alertLine" style={{...posStyle, background: `black` , transform: `rotate(${rad2}rad)`}}></div>
+                    <div className="alertLine" style={{...posStyle, background: `yellow`, transform: `rotate(${rad3}rad)`}}></div>
                 </div>;
             })}
         </div>

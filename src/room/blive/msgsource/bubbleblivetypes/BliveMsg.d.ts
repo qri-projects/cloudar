@@ -166,6 +166,21 @@ export interface SendGift extends BaseBliveMsg {
     "_roomid": 336119
 }
 
+export interface GuardBuy extends BaseBliveMsg {
+    "cmd": "GUARD_BUY",
+    "data": {
+        "uid": 1781654,
+        "username": "renbye",
+        "guard_level": 3,
+        "num": 1,
+        "price": 198000,
+        "gift_id": 10003,
+        "gift_name": "舰长",
+        "start_time": 1553429698,
+        "end_time": 1553429698
+    }
+}
+
 export interface EntryEffect extends BaseBliveMsg {
     "cmd": "ENTRY_EFFECT",
     "data": {

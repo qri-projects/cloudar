@@ -8,13 +8,17 @@ import FixedInfoPanelView from "./view/fixedview/fixed/FixedInfoPanelView";
 import BubbleAlertPanel, {BubbleAlertManager} from "./view/bubblealter/BubbleAlertPanel";
 import BubblePlaceManager from "./view/BubblePlaceManager";
 import {BliveBubbleApplication, AppContext} from "./BubbleContextManager";
+import ConfigurationPanel from "./view/configuration/ConfigurationPanel";
 
-export default class BliveBubbleRoom extends React.Component<BliveRoomProp, BliveBubbleApplication> {
+export default class BliveBubbleRoom extends React.Component<any, BliveBubbleApplication> {
     qiRenComponentRef = React.createRef<FixedInfoPanelView>();
 
-    constructor(props: BliveRoomProp) {
+    constructor(props: any) {
         super(props);
-        this.state = new BliveBubbleApplication(this.props.roomId);
+        const urlParam = this.anaUrlParam()
+        this.state = new BliveBubbleApplication(urlParam, (state) => {
+            this.setState({...this.state, ...state})
+        });
     }
 
     render() {
@@ -29,19 +33,22 @@ export default class BliveBubbleRoom extends React.Component<BliveRoomProp, Bliv
                 <div className="positionAlerter">
                 </div>
 
-
                 {/*<video src="//pic.ggemo.com/usaNCED.mp4" autoPlay loop muted*/}
                 {/*       style={{position:"fixed",zIndex: "-10",width: "100vw", filter: "grayscale(100%) brightness(118%)"}}></video>*/}
                 <BubbleAlertPanel/>
             </div>
             <FixedInfoPanelView ref={this.qiRenComponentRef}/>
             <BubblePanel msgs={this.state.msgsHolder}/>
+            <ConfigurationPanel></ConfigurationPanel>
         </AppContext.Provider>
     }
 
     componentDidMount() {
         const that = this;
         const app = this.state;
+
+        // @ts-ignore
+        window.app = app
         app.msgSource.registerOnMsg(msg => {
             app.msgManager.registerMsg(msg);
         })
@@ -58,10 +65,15 @@ export default class BliveBubbleRoom extends React.Component<BliveRoomProp, Bliv
         })
         app.msgSource.start()
     }
-}
 
-export interface BliveRoomProp {
-    roomId: number
+    anaUrlParam(): Map<string, string> {
+        const res = new Map<string, string>()
+        window.location.search.split("?")[1].split("&").forEach(kvStr => {
+            const kvArr = kvStr.split("=")
+            res.set(kvArr[0], kvArr[1])
+        });
+        return res;
+    }
 }
 
 interface BliveRoomState {

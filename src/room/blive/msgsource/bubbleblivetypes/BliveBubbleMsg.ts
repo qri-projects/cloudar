@@ -1,4 +1,4 @@
-import {Danmaku, EntryEffect, HeartBeat, InteractWord, SendGift} from "./BliveMsg";
+import {Danmaku, EntryEffect, GuardBuy, HeartBeat, InteractWord, SendGift} from "./BliveMsg";
 import {Sender} from "../../../../normal/NormalMsg";
 import {GiftStatic} from "./BubbleBliveCommon";
 
@@ -33,6 +33,10 @@ export class BliveBubbleSendGiftMsg extends BliveBubbleMsg<SendGift> {
         super(uniqueId, raw, senders, remainMillSeconds);
         this.giftStatic = giftStatic;
     }
+}
+
+export class BliveBubbleGuardBuyMsg extends BliveBubbleMsg<GuardBuy> {
+
 }
 
 export class BliveBubbleDanmuMsg extends BliveBubbleMsg<Danmaku> {
